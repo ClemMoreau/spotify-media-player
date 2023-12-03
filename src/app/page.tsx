@@ -1,11 +1,8 @@
 "use client";
 
-import Image from 'next/image'
 import styles from './page.module.css'
 import { useEffect, useState } from 'react';
-import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 
-import sdk from "../lib/ClientInstance";
 import { signIn, useSession } from 'next-auth/react';
 import WebPlayback from '@/components/WebPlayback/WebPlayback';
 import { AuthUser } from './api/auth/[...nextauth]/authOptions';
@@ -25,7 +22,7 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      {session.status === "authenticated" 
+      {session.status === "authenticated" && token !== ""
         ? <WebPlayback token={token} /> 
         :
         <button onClick={() => {
@@ -34,6 +31,6 @@ export default function Home() {
       }>
         Sign In
       </button>}
-    </main>
+          </main>
   )
 }

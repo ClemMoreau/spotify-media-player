@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import sdk from "@/lib/ClientInstance"
 
 const track = {
     name: "",
@@ -19,7 +20,7 @@ interface WebPlaybackProps {
 
 const WebPlayback = ({token}: WebPlaybackProps) => {
 
-    const [player, setPlayer] = useState<Spotify.Player | undefined>(undefined);
+    const [player, setPlayer] = useState<Spotify.Player>({} as Spotify.Player);
     const [is_paused, setPaused] = useState(false);
     const [is_active, setActive] = useState(false);
     const [current_track, setTrack] = useState(track);
@@ -38,37 +39,41 @@ const WebPlayback = ({token}: WebPlaybackProps) => {
                 getOAuthToken: cb => { cb(token); },
                 volume: 0.5
             });
-    
+            
             setPlayer(player);
     
-            player.addListener('ready', ({ device_id }: any) => {
+            player.addListener('ready', async ({ device_id }: any) => {
                 console.log('Ready with Device ID', device_id);
+                await sdk.player.transferPlayback([device_id], true);
             });
     
             player.addListener('not_ready', ({ device_id }: any) => {
                 console.log('Device ID has gone offline', device_id);
             });
-    
-    
-            player.connect();
-        }
 
-        player?.addListener('player_state_changed', ( state => {
+            player.addListener('player_state_changed', (state => {
+                if (!state) {
+                    return;
+                }
+            
+                setTrack(state.track_window.current_track);
+                setPaused(state.paused);
+            
+                
+                player.getCurrentState().then( state => { 
+                    (!state)? setActive(false) : setActive(true) 
+                });
+            
+            }));        
 
-            if (!state) {
-                return;
-            }
-        
-            setTrack(state.track_window.current_track);
-            setPaused(state.paused);
-        
-        
-            player.getCurrentState().then( state => { 
-                (!state)? setActive(false) : setActive(true) 
+            player.connect().then(success => {
+                if (success) {
+                    console.log('The Web Playback SDK successfully connected to Spotify!');
+                }
             });
-        
-        }));        
+        }
     }, []);
+        
 
     return (
         <>
@@ -87,15 +92,15 @@ const WebPlayback = ({token}: WebPlaybackProps) => {
                                     }</div>
                     </div>
               </div>
-            <button className="btn-spotify" onClick={() => { player?.previousTrack() }} >
+            <button className="btn-spotify" onClick={() => { player.previousTrack() }} >
                 &lt;&lt;
             </button>
 
-            <button className="btn-spotify" onClick={() => { player?.togglePlay() }} >
+            <button className="btn-spotify" onClick={() => { player.togglePlay() }} >
                 { is_paused ? "PLAY" : "PAUSE" }
             </button>
 
-            <button className="btn-spotify" onClick={() => { player?.nextTrack() }} >
+            <button className="btn-spotify" onClick={() => { player.nextTrack() }} >
                 &gt;&gt;
             </button>
           </div>
