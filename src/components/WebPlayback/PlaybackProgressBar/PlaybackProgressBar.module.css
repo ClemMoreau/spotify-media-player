@@ -1,0 +1,51 @@
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.relativeContainer {
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 10px 0px;
+    width: 75%;
+    cursor: pointer;
+}
+
+.progressBar {
+    position: absolute;
+    height: 4px;
+}
+
+.progressBar {
+    background-color: #ffffff;
+}
+
+.progressBar:hover {
+    background-color: #1DB954;
+}
+
+.progressBarHover {
+    display: block;
+    background-color: #ffffff;
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.emptyProgressBar {
+    background-color: #4d4d4d;
+    height: 4px;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.timer {
+    font-weight: 100;
+    font-size: 10px;
+    margin: 4px 8px;
+}

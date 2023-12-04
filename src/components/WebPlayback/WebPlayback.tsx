@@ -1,7 +1,27 @@
 import { useState, useEffect } from "react";
 import sdk from "@/lib/ClientInstance"
+import css from "./WebPlayback.module.css";
+import PlaybackInfos from "./PlaybackInfos/PlaybackInfos";
+import PlayBackControls from "./PlaybackControls/PlaybackControls";
+import PlaybackOptions from "./PlaybackOptions/PlaybackOptions";
+import PlaybackProgressBar from "./PlaybackProgressBar/PlaybackProgressBar";
 
-const track = {
+export interface Track {
+    name: string;
+    album: {
+        images: [
+            { url: string }
+        ]
+    };
+    artists: [
+        { name: string }
+    ];
+    duration_ms: number;
+    position_ms: number;
+
+}
+
+const TRACK : Track = {
     name: "",
     album: {
         images: [
@@ -10,7 +30,9 @@ const track = {
     },
     artists: [
         { name: "" }
-    ]
+    ],
+    duration_ms: 0,
+    position_ms: 0,
 }
 
 
@@ -23,7 +45,7 @@ const WebPlayback = ({token}: WebPlaybackProps) => {
     const [player, setPlayer] = useState<Spotify.Player>({} as Spotify.Player);
     const [is_paused, setPaused] = useState(false);
     const [is_active, setActive] = useState(false);
-    const [current_track, setTrack] = useState(track);
+    const [current_track, setTrack] = useState(TRACK);
 
 
     useEffect(() => {
@@ -51,12 +73,14 @@ const WebPlayback = ({token}: WebPlaybackProps) => {
                 console.log('Device ID has gone offline', device_id);
             });
 
-            player.addListener('player_state_changed', (state => {
+            player.addListener('player_state_changed', (state => { 
+                console.log("State changed !", state);
+                              
                 if (!state) {
                     return;
                 }
             
-                setTrack(state.track_window.current_track);
+                setTrack({...state.track_window.current_track, duration_ms: state.duration, position_ms: state.position} as unknown as Track);
                 setPaused(state.paused);
             
                 
@@ -77,33 +101,26 @@ const WebPlayback = ({token}: WebPlaybackProps) => {
 
     return (
         <>
-          <div className="container">
-             <div className="main-wrapper">
-                <img src={current_track.album.images[0].url} 
-                        className="now-playing__cover" alt="" />
-
-                    <div className="now-playing__side">
-                        <div className="now-playing__name">{
-                                    current_track.name
-                                    }</div>
-
-                        <div className="now-playing__artist">{
-                                    current_track.artists[0].name
-                                    }</div>
+            {is_active ? 
+                <>  
+                    <div className={css.playbackInfosContainer}>
+                        <PlaybackInfos current_track={current_track} />
                     </div>
-              </div>
-            <button className="btn-spotify" onClick={() => { player.previousTrack() }} >
-                &lt;&lt;
-            </button>
-
-            <button className="btn-spotify" onClick={() => { player.togglePlay() }} >
-                { is_paused ? "PLAY" : "PAUSE" }
-            </button>
-
-            <button className="btn-spotify" onClick={() => { player.nextTrack() }} >
-                &gt;&gt;
-            </button>
-          </div>
+                    <div className={css.playbackControlsContainer}>
+                        <PlayBackControls player={player} is_paused={is_paused} />
+                        <PlaybackProgressBar 
+                            duration_ms={current_track.duration_ms} 
+                            position_ms={current_track.position_ms} 
+                            is_paused={is_paused}
+                        />
+                    </div>
+                    <div className={css.playbackOptionsContainer}>
+                        <PlaybackOptions />
+                    </div>
+                </>
+            : 
+                <div>Loading...</div>
+            }
         </>
       );
 }

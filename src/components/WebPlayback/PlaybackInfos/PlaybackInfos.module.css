@@ -1,0 +1,27 @@
+.mainWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.nowPlayingCover {
+    max-width: 65px;
+    max-height: 65px;
+    border-radius: 5px;
+}
+
+.nowPlayingSide {
+    padding: 16px 12px;
+    display: flex;
+    justify-content: start;
+    flex-direction: column;
+}
+
+.nowPlayingName {
+    font-size: 14px;
+    /* font-weight: 600; */
+}
+
+.nowPlayingArtist {
+    font-size: 12px;
+    font-weight: 100;
+}

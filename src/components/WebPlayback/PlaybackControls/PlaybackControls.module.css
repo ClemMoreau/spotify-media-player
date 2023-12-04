@@ -1,0 +1,22 @@
+.btnSpotify {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 30%;
+}
+
+.btnSpotify > div {
+    cursor: pointer;
+}
+
+.btnSpotifyRandom {}
+
+.btnSpotifyPrev {
+}
+
+.btnSpotifyPlay {}
+
+.btnSpotifyNext {
+}
+
+.btnSpotifyLoop {}

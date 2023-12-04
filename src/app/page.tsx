@@ -23,7 +23,15 @@ export default function Home() {
   return (
     <main className={styles.main}>
       {session.status === "authenticated" && token !== ""
-        ? <WebPlayback token={token} /> 
+        ? 
+        (
+        <>
+          <div className={styles.mainContainer}></div>
+          <div className={styles.playbackContainer}>
+            <WebPlayback token={token} /> 
+          </div>
+        </>
+        )
         :
         <button onClick={() => {
         signIn("spotify");
