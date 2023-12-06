@@ -1,17 +1,24 @@
 .container {
-    width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
 }
 
+.options {
+    margin-left: 14px;
+}
+
+.volumeIcon {
+    margin-left: 16px;
+}
+
 .relativeContainer {
+    margin-left: 4px;
     position: relative;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: 10px 0px;
-    width: 75%;
+    width: 25%;
     cursor: pointer;
 }
 
@@ -35,10 +42,4 @@
     height: 4px;
     border-radius: 5px;
     width: 100%;
-}
-
-.timer {
-    font-weight: 100;
-    font-size: 10px;
-    padding: 4px 8px;
 }

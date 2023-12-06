@@ -6,46 +6,16 @@ import PlayBackControls from "./PlaybackControls/PlaybackControls";
 import PlaybackOptions from "./PlaybackOptions/PlaybackOptions";
 import PlaybackProgressBar from "./PlaybackProgressBar/PlaybackProgressBar";
 
-export interface Track {
-    name: string;
-    album: {
-        images: [
-            { url: string }
-        ]
-    };
-    artists: [
-        { name: string }
-    ];
-    duration_ms: number;
-    position_ms: number;
-
-}
-
-const TRACK : Track = {
-    name: "",
-    album: {
-        images: [
-            { url: "" }
-        ]
-    },
-    artists: [
-        { name: "" }
-    ],
-    duration_ms: 0,
-    position_ms: 0,
-}
-
-
 interface WebPlaybackProps {
     token: string;
 }
 
 const WebPlayback = ({token}: WebPlaybackProps) => {
 
-    const [player, setPlayer] = useState<Spotify.Player>({} as Spotify.Player);
-    const [is_paused, setPaused] = useState(false);
+    const [player, setPlayer] = useState<Spotify.Player>();
+    const [state, setState] = useState<Spotify.PlaybackState>();
+    const [currentTrack, setCurrentTrack] = useState<Spotify.Track>();
     const [is_active, setActive] = useState(false);
-    const [current_track, setTrack] = useState(TRACK);
 
 
     useEffect(() => {
@@ -59,31 +29,31 @@ const WebPlayback = ({token}: WebPlaybackProps) => {
             const player = new window.Spotify.Player({
                 name: 'Web Playback SDK',
                 getOAuthToken: cb => { cb(token); },
-                volume: 0.5
+                volume: 0.5,
             });
             
             setPlayer(player);
     
             player.addListener('ready', async ({ device_id }: any) => {
-                console.log('Ready with Device ID', device_id);
+                console.debug('Ready with Device ID', device_id);
                 await sdk.player.transferPlayback([device_id], true);
+                await sdk.player.pausePlayback(device_id);
             });
     
             player.addListener('not_ready', ({ device_id }: any) => {
-                console.log('Device ID has gone offline', device_id);
+                console.debug('Device ID has gone offline', device_id);
             });
 
             player.addListener('player_state_changed', (state => { 
-                console.log("State changed !", state);
-                              
+                console.debug("State changed");
+                
                 if (!state) {
                     return;
                 }
+        
+                setState((prevState) => prevState && prevState.timestamp  > state.timestamp ? prevState : state);
+                setCurrentTrack((prevState) => prevState && prevState.id === state.track_window.current_track.id ? prevState : state.track_window.current_track);
             
-                setTrack({...state.track_window.current_track, duration_ms: state.duration, position_ms: state.position} as unknown as Track);
-                setPaused(state.paused);
-            
-                
                 player.getCurrentState().then( state => { 
                     (!state)? setActive(false) : setActive(true) 
                 });
@@ -92,7 +62,7 @@ const WebPlayback = ({token}: WebPlaybackProps) => {
 
             player.connect().then(success => {
                 if (success) {
-                    console.log('The Web Playback SDK successfully connected to Spotify!');
+                    console.debug('The Web Playback SDK successfully connected to Spotify!');
                 }
             });
         }
@@ -101,21 +71,17 @@ const WebPlayback = ({token}: WebPlaybackProps) => {
 
     return (
         <>
-            {is_active ? 
+            {is_active && state && player && currentTrack ? 
                 <>  
                     <div className={css.playbackInfosContainer}>
-                        <PlaybackInfos current_track={current_track} />
+                        <PlaybackInfos current_track={currentTrack} />
                     </div>
                     <div className={css.playbackControlsContainer}>
-                        <PlayBackControls player={player} is_paused={is_paused} />
-                        <PlaybackProgressBar 
-                            duration_ms={current_track.duration_ms} 
-                            position_ms={current_track.position_ms} 
-                            is_paused={is_paused}
-                        />
+                        <PlayBackControls player={player} is_paused={state.paused} />
+                        <PlaybackProgressBar state={state} currentTrack={currentTrack} />
                     </div>
                     <div className={css.playbackOptionsContainer}>
-                        <PlaybackOptions />
+                        <PlaybackOptions player={player} />
                     </div>
                 </>
             : 

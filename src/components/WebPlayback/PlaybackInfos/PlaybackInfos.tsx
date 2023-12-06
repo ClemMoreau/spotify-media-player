@@ -1,13 +1,12 @@
-import { Track } from "../WebPlayback";
 import css from './PlaybackInfos.module.css';
 
 interface PlaybackInfosProps {
-    current_track: Track;
+    current_track: Spotify.Track | undefined;
 }
 
 const PlaybackInfos = ({current_track}: PlaybackInfosProps) => {
     return ( 
-        <div className={css.mainWrapper}>
+        current_track ? <div className={css.mainWrapper}>
             <img src={current_track.album.images[0].url} 
                 className={css.nowPlayingCover} alt="" />
 
@@ -20,7 +19,7 @@ const PlaybackInfos = ({current_track}: PlaybackInfosProps) => {
                 </div>
             </div>
         </div> 
-    );
+    : <div> TODO : Info loader </div>);
 }
  
 export default PlaybackInfos;

@@ -1,0 +1,49 @@
+.relativeContainer {
+    position: relative;
+}
+
+.absoluteContainer {
+    position: absolute;
+    background-color: #282828;
+    bottom: 32px;
+    right: -164px;
+    border-radius: 5px;
+    padding: 8px 16px;
+    /* margin: 4px 8px; */
+}
+
+.deviceContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+    min-width: 250px;
+}
+
+.deviceContainer:hover {
+    background-color: #3d3d3d;
+    border-radius: 5px;
+}
+
+.deviceIcon {
+    margin: 12px 16px;
+}
+
+.deviceInfo, .currentDeviceInfo {
+    font-size: 14px;
+    font-weight: 200;
+}
+
+.currentDevice {
+    color: #1DB954;
+}
+
+.title {
+    font-weight: initial;
+}
+
+.select {
+    margin: 24px 16px;
+    font-size: 15px;
+}
+
