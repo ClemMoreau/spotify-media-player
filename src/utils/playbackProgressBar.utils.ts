@@ -1,7 +1,7 @@
 const computeNewWidth = (
     event: React.MouseEvent<HTMLDivElement>,
-    progressBarRef: React.RefObject<HTMLDivElement>
-  ): number => {
+    progressBarRef: React.RefObject<HTMLDivElement>,
+): number => {
     if (!progressBarRef.current) return 0;
 
     const progressBar = progressBarRef.current;
@@ -24,23 +24,25 @@ const computeNewWidth = (
 const computeNewClock = (prevClock: string): string => {
     const clock = prevClock.split(":");
     const seconds = parseInt(clock[1]) + 1;
-    const minutes = Math.floor((parseInt(clock[0]) + seconds / 60) % 60) ;
-    return minutes + ":" + Math.round(seconds % 60).toString().padStart(2, "0");
-}
+    const minutes = Math.floor((parseInt(clock[0]) + seconds / 60) % 60);
+    return (
+        minutes +
+        ":" +
+        Math.round(seconds % 60)
+            .toString()
+            .padStart(2, "0")
+    );
+};
 
 const handleMouseOver = (eventType: "Enter" | "Leave", id: string) => {
-    
     const progressBarHover = document.getElementById(`${id}Hover`);
     const progressBar = document.getElementById(id);
 
     if (!progressBarHover || !progressBar) return;
 
     progressBarHover.style.display = eventType === "Enter" ? "block" : "none";
-    progressBar.style.backgroundColor = eventType === "Enter" ? "#1DB954" : "#FFFFFF";
-  }
-
-export { 
-    computeNewClock,
-    computeNewWidth,
-    handleMouseOver
+    progressBar.style.backgroundColor =
+        eventType === "Enter" ? "#1DB954" : "#FFFFFF";
 };
+
+export { computeNewClock, computeNewWidth, handleMouseOver };

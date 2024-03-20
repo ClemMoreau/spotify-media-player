@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
 import { AuthUser } from "@/app/api/auth/[...nextauth]/authOptions";
-import { 
-    AccessToken, 
-    IAuthStrategy, 
-    SdkConfiguration, 
-    SdkOptions, 
-    SpotifyApi 
-} from "@spotify/web-api-ts-sdk"
-import { getSession, signIn } from "next-auth/react"
+import {
+    AccessToken,
+    IAuthStrategy,
+    SdkConfiguration,
+    SdkOptions,
+    SpotifyApi,
+} from "@spotify/web-api-ts-sdk";
+import { getSession, signIn } from "next-auth/react";
 
 class NextAuthStrategy implements IAuthStrategy {
     public getOrCreateAccessToken(): Promise<AccessToken> {
-        return this.getAccessToken()
+        return this.getAccessToken();
     }
     public async getAccessToken(): Promise<AccessToken> {
-        const session : any = await getSession();
+        const session: any = await getSession();
 
         if (!session) {
             return {} as AccessToken;
@@ -26,7 +26,7 @@ class NextAuthStrategy implements IAuthStrategy {
             return this.getAccessToken();
         }
 
-        const { user }: {user: AuthUser} = session;
+        const { user }: { user: AuthUser } = session;
 
         return {
             access_token: user.access_token,
@@ -39,13 +39,13 @@ class NextAuthStrategy implements IAuthStrategy {
         this.removeAccessToken();
     }
     setConfiguration(configuration: SdkConfiguration): void {
-        console.warn("[Spotify-SDK][WARN]\setConfiguration not implemented");
+        console.warn("[Spotify-SDK][WARN]setConfiguration not implemented");
     }
 }
 
 const withNextAuthStrategy = (config?: SdkOptions) => {
     const strategy = new NextAuthStrategy();
     return new SpotifyApi(strategy, config);
-}
+};
 
 export default withNextAuthStrategy();

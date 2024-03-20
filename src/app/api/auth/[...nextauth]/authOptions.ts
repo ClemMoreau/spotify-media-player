@@ -13,15 +13,15 @@ export type AuthUser = {
     refresh_token: string;
     scope: string;
     id: string;
-  };
+};
 
 const authOptions: AuthOptions = {
     providers: [spotifyProfile],
     session: {
-        maxAge: 60 * 60, 
+        maxAge: 60 * 60,
     },
     callbacks: {
-        async jwt({token, account}: { token: JWT; account: Account | null }) {
+        async jwt({ token, account }: { token: JWT; account: Account | null }) {
             if (!account) {
                 return token;
             }
@@ -39,11 +39,11 @@ const authOptions: AuthOptions = {
 
             if (Date.now() < updatedToken.expires_at) {
                 return refreshAccessToken(updatedToken);
-              }
+            }
 
             return updatedToken;
         },
-        async session({session, token}: { session: any; token: JWT }) {
+        async session({ session, token }: { session: any; token: JWT }) {
             const user: AuthUser = {
                 ...session.user,
                 access_token: token.access_token,
@@ -53,7 +53,7 @@ const authOptions: AuthOptions = {
                 refresh_token: token.refresh_token,
                 scope: token.scope,
                 id: token.id,
-              };
+            };
             session.user = user;
             session.error = token.error;
 

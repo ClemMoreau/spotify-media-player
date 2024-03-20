@@ -1,19 +1,19 @@
 .main {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 100vh;
 }
 
 .mainContainer {
-  min-height: 80%;
-  width: 100%;
+    min-height: 80%;
+    width: 100%;
 }
 
 .playbackContainer {
-  min-height: 20%;
-  width: 100%;
-  display: flex;
-  padding: 28px 16px;
-} 
+    min-height: 20%;
+    width: 100%;
+    display: flex;
+    padding: 28px 16px;
+}
